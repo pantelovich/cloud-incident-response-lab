@@ -1,9 +1,9 @@
 terraform {
-  required_version = ">= 1.5"
+  required_version = ">= 1.5.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 5.60"
     }
   }
 }
@@ -50,48 +50,46 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
+# Data source for least-privilege IAM policy
+data "aws_iam_policy_document" "lambda_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = ["arn:aws:logs:*:*:*"]
+  }
+  
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:StopInstances",
+      "ec2:CreateTags",
+      "ec2:DescribeInstances"
+    ]
+    resources = ["*"]
+  }
+  
+  statement {
+    effect = "Allow"
+    actions = ["sns:Publish"]
+    resources = [aws_sns_topic.alerts.arn]
+  }
+  
+  statement {
+    effect = "Allow"
+    actions = ["guardduty:GetFindings"]
+    resources = ["*"]
+  }
+}
+
 # IAM Policy for Lambda
 resource "aws_iam_role_policy" "lambda_policy" {
   name = "${var.project_name}-lambda-policy"
   role = aws_iam_role.lambda_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Resource = "arn:aws:logs:*:*:*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "ec2:StopInstances",
-          "ec2:DescribeInstances",
-          "ec2:ModifyInstanceAttribute"
-        ]
-        Resource = "*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "sns:Publish"
-        ]
-        Resource = aws_sns_topic.alerts.arn
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "guardduty:GetFindings"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
+  policy = data.aws_iam_policy_document.lambda_policy.json
 }
 
 # Lambda Function
@@ -116,12 +114,15 @@ resource "aws_lambda_function" "auto_remediate" {
 
 # CloudWatch Event Rule for GuardDuty findings
 resource "aws_cloudwatch_event_rule" "guardduty_findings" {
-  name        = "${var.project_name}-guardduty-findings"
-  description = "Capture GuardDuty findings"
+  name        = "${var.project_name}-guardduty-high-findings"
+  description = "Trigger on GuardDuty high severity findings"
 
   event_pattern = jsonencode({
     source      = ["aws.guardduty"]
     detail-type = ["GuardDuty Finding"]
+    detail = {
+      severity = [7, 8, 9]
+    }
   })
 }
 
