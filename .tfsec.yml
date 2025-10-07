@@ -1,0 +1,7 @@
+ignore:
+  - code: AWS017
+    justification: "Lab environment; test instance requires SSH access for demonstration purposes"
+  - code: AWS018
+    justification: "Lab environment; test instance uses default security group for demonstration purposes"
+  - code: AWS019
+    justification: "Lab environment; test instance allows SSH from any IP for demonstration purposes"
