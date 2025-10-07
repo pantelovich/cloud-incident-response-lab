@@ -1,3 +1,7 @@
+![CI](https://github.com/pantelovich/cloud-incident-response-lab/actions/workflows/ci.yml/badge.svg)
+![LICENSE](https://img.shields.io/github/license/pantelovich/cloud-incident-response-lab?style=for-the-badge)
+![MADE WITH TERRAFORM](https://img.shields.io/badge/MADE%20WITH-TERRAFORM-5C4EE5?style=for-the-badge&logo=terraform)
+
 ![AWS](https://img.shields.io/badge/AWS-orange?style=for-the-badge&logo=amazonaws)
 ![CLOUD](https://img.shields.io/badge/CLOUD-blue?style=for-the-badge&logo=icloud)
 ![TERRAFORM](https://img.shields.io/badge/TERRAFORM-844FBA?style=for-the-badge&logo=terraform)
@@ -46,30 +50,76 @@ flowchart TD
 - Python 3.9+
 - Verified email address for SNS alerts
 
-### Steps
+### Quick Start
 
 ```bash
-git clone https://github.com/yourusername/cloud-incident-response-lab.git
-cd cloud-incident-response-lab/infra
+git clone https://github.com/pantelovich/cloud-incident-response-lab.git
+cd cloud-incident-response-lab
 
-# Zip Lambda and apply
-cd ../lambda && zip -r ../lambda.zip .
-cd ../infra
+# Copy and edit variables
+cp infra/terraform.tfvars.example infra/terraform.tfvars
+# Edit terraform.tfvars with your email and preferences
+
+# Deploy infrastructure
+make init
+make zip
+make apply
+```
+
+### Manual Steps
+
+```bash
+# Alternative: Manual deployment
+cd infra
 terraform init
-terraform apply -auto-approve
+terraform plan
+terraform apply
 ```
 
 ### Variables
 
-Create a terraform.tfvars file:
+Copy the example file and customize:
+
+```bash
+cp infra/terraform.tfvars.example infra/terraform.tfvars
+```
+
+Edit `terraform.tfvars` with your settings:
 
 ```hcl
 aws_region     = "us-east-1"
 alert_email    = "your-email@example.com"
-project_name   = "cloud-incident-response"
-create_test_vpc = true
+
+# Optional: Create test VPC and instance for demonstration
+create_test_vpc      = true
 create_test_instance = true
 ```
+
+## Costs
+
+This lab uses AWS Free Tier eligible services where possible:
+
+- **GuardDuty**: 30-day free trial, then $1.00 per million events
+- **Lambda**: 1M free requests/month, 400,000 GB-seconds compute time
+- **SNS**: 1M free notifications/month
+- **CloudWatch Events**: 1M free events/month
+- **EC2 t3.micro**: 750 hours/month free for 12 months
+
+Estimated monthly cost for light testing: **$0-5** (mostly GuardDuty events)
+
+## Local Testing
+
+Test the Lambda function locally using the sample event:
+
+1. **AWS Console Test**:
+   - Go to Lambda function in AWS Console
+   - Create test event using `tests/sample-guardduty-event.json`
+   - Run test and verify logs
+
+2. **SAM Local** (optional):
+   ```bash
+   sam local invoke -e tests/sample-guardduty-event.json
+   ```
 
 ## Testing
 
@@ -107,6 +157,12 @@ for i in {1..10}; do
 done
 ```
 
+## Gallery
+
+| SNS Alert Email | CloudWatch Logs | Architecture Overview |
+|------------------|-----------------|------------------------|
+| ![SNS Alert Email showing incident notification](docs/alert-email.png) | ![CloudWatch Logs showing Lambda execution details](docs/cloudwatch-log.png) | ![Architecture diagram showing data flow](docs/architecture-diagram.png) |
+
 ## What I Learned
 
 - How to automate cloud incident response workflows
@@ -126,10 +182,18 @@ done
 
 ## Cleanup
 
+Remove all resources to avoid charges:
+
 ```bash
+# Using Makefile
+make destroy
+
+# Or manually
 cd infra
 terraform destroy -auto-approve
 ```
+
+**Important**: Always clean up test resources when done to avoid unexpected charges.
 
 ## License
 
