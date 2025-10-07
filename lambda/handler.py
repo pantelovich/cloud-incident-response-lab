@@ -5,7 +5,7 @@ import os
 ec2 = boto3.client('ec2')
 sns = boto3.client('sns')
 
-SNS_TOPIC_ARN = os.environ['SNS_TOPIC_ARN']
+SNS_TOPIC_ARN = os.environ.get('SNS_TOPIC_ARN', '')
 
 def lambda_handler(event, context):
     print("Received event:", json.dumps(event))
@@ -31,10 +31,13 @@ def lambda_handler(event, context):
         print(message)
     
     # Send SNS alert
-    sns.publish(
-        TopicArn=SNS_TOPIC_ARN,
-        Subject="GuardDuty Alert: Instance Isolated",
-        Message=message
-    )
+    if SNS_TOPIC_ARN:
+        sns.publish(
+            TopicArn=SNS_TOPIC_ARN,
+            Subject="GuardDuty Alert: Instance Isolated",
+            Message=message
+        )
+    else:
+        print("SNS_TOPIC_ARN not configured, skipping alert")
 
     return {"status": "completed", "instance": instance_id}
