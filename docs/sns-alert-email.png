@@ -1,0 +1,16 @@
+AWS SNS Alert Email Screenshot
+===============================
+
+This file represents the SNS email alert notification showing:
+
+- AWS GuardDuty finding details
+- High severity threat detection
+- Instance information and remediation advice
+- AWS Console link for investigation
+
+Content shows:
+- Subject: "AWS GuardDuty Alert - High Severity"
+- Finding type: EC2: UnauthorizedAccess:SSH
+- Severity: 8
+- Instance ID: i-0123456789abcdef0
+- Advice for remediation and security group review

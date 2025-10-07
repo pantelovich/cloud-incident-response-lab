@@ -1,16 +1,22 @@
 # Terraform
+.terraform/
 *.tfstate
 *.tfstate.*
-.terraform/
-.terraform.lock.hcl
-terraform.tfvars
-*.tfplan
+crash.log
+crash.*.log
+*.tfvars
+!*.tfvars.example
 
-# Lambda deployment package
+# Lambda
 lambda.zip
-
-# AWS credentials
-.aws/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
 
 # IDE
 .vscode/
@@ -24,3 +30,8 @@ Thumbs.db
 
 # Logs
 *.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp

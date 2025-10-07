@@ -1,0 +1,22 @@
+{
+  "version": "0",
+  "id": "12345678-1234-1234-1234-123456789012",
+  "detail-type": "GuardDuty Finding",
+  "source": "aws.guardduty",
+  "account": "123456789012",
+  "time": "2025-01-27T10:00:00Z",
+  "region": "us-east-1",
+  "detail": {
+    "severity": 8,
+    "resource": {
+      "resourceType": "Instance",
+      "instanceDetails": {
+        "instanceId": "i-0123456789abcdef0"
+      }
+    },
+    "service": {
+      "serviceName": "guardduty"
+    },
+    "type": "Recon:EC2/PortProbeUnprotectedPort"
+  }
+}

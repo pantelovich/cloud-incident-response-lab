@@ -1,0 +1,16 @@
+CloudWatch Logs Lambda Execution Screenshot
+============================================
+
+This file represents CloudWatch logs showing:
+
+- Lambda function execution details
+- GuardDuty finding processing
+- Instance remediation actions
+- Error handling and logging
+
+Content shows:
+- Function logs from auto-remediate Lambda
+- Execution context and environment variables
+- SNS notification sending
+- EC2 instance stopping actions
+- Any error messages or debugging info

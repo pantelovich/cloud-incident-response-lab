@@ -1,0 +1,18 @@
+System Architecture Diagram Screenshot
+=======================================
+
+This file represents the complete system architecture showing:
+
+- GuardDuty threat detection flow
+- CloudWatch Events triggering
+- Lambda function processing
+- SNS notification delivery
+- EC2 instance remediation
+
+Architecture flow:
+1. Attacker -> Compromised EC2 Instance
+2. EC2 -> GuardDuty Finding (severity 7-9)
+3. GuardDuty -> CloudWatch Event Rule
+4. Event Rule -> Lambda Function
+5. Lambda -> SNS Alert Email
+6. Lambda -> Stop EC2 Instance
