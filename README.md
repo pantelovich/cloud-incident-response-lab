@@ -13,12 +13,6 @@
 
 A hands-on lab demonstrating how to automatically respond to AWS security incidents detected by GuardDuty. When a high-severity threat is detected, a Lambda function automatically isolates or stops the affected EC2 instance and sends a detailed SNS alert.
 
-## Why This Project Matters
-- Real-world relevance: Mirrors how cloud security teams automate incident response in production
-- Job-ready skills: Combines GuardDuty, CloudWatch, Lambda, and SNS with Terraform IaC
-- Security mindset: Builds on detection to response to automation thinking
-- Demonstrates progression: Follows naturally from cloud threat detection concepts
-
 ## Architecture Overview
 
 ```mermaid
@@ -162,14 +156,6 @@ done
 | SNS Alert Email | CloudWatch Logs | Architecture Overview |
 |------------------|-----------------|------------------------|
 | ![SNS Alert Email showing incident notification](docs/sns-alert-email.png) | ![CloudWatch Logs showing Lambda execution details](docs/cloudwatch-logs-execution.png) | ![Architecture diagram showing data flow](docs/architecture-diagram-overview.png) |
-
-## What I Learned
-
-- How to automate cloud incident response workflows
-- Integrating GuardDuty with CloudWatch and Lambda
-- Writing least-privilege IAM policies for automation
-- Designing end-to-end cloud security pipelines
-- Terraform best practices for security automation
 
 ## Future Improvements
 
